@@ -41,17 +41,22 @@ The Desktop having focus isn't really the intended use case, but for completenes
 on run {input, parameters}
     set frontApp to (path to frontmost application as Unicode text)
     if (frontApp does not contain "Finder.app") then
-        -- Finder does not have focus
+        -- Finder does not have focus.
         return
     end if
 
     tell application "Finder"
         set listSize to count of (every window)
         if listSize is equal to 0 then
-            -- the Finder desktop has focus and no windows anywhere else
+            -- The Finder desktop has focus and no windows anywhere else. default to home dir.
             set dir_path to "~"
         else
-            set dir_path to quoted form of (POSIX path of (folder of the front window as alias))
+            try
+                set dir_path to quoted form of (POSIX path of (folder of the front window as alias))
+            on error errMsg
+                -- This is a special dir (e.g. Network or "machine name"). default to home dir.
+                set dir_path to "~"
+            end try
         end if
     end tell
 
