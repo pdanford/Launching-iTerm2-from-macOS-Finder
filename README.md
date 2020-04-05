@@ -19,6 +19,7 @@ This is only active when a folder is currently selected in a Finder window that 
 5. Save; if Automator tries to save to iCloud drive, better to save locally - save as **iTermOpenHereScript.workflow** to the Desktop and then move it to **~/Library/Services**.
 6. Add the keyboard shortcut under `System Preferences -> Keyboard -> Shortcuts -> Services` under the `General` section. Check **iTermOpenHereScript** and Add Shortcut. Note that the first time you launch there may be a security popup saying iTermOpenHereScript wants access... Click OK to all.
 7. To prevent two windows from opening when you use the keyboard Shortcut when iTerm2 is not already running, set iTerm2's `Preferences -> General -> Startup` to **Only Restore Hotkey Window** for the Window restoration policy.
+8. To make windows open a bit faster,  in iTerm2's `Preferences -> General -> Closing` uncheck **Quit when all windows are closed**.
 
 This is only active when a Finder window (or the Desktop itself) has focus (and ignores any selected Finder directory).
 
@@ -32,6 +33,7 @@ The Desktop having focus isn't really the intended use case, but for completenes
 5. Drag and drop iTermOpenHereScript.app onto the Finder toolbar while holding down the <kbd>option</kbd>+<kbd>command</kbd> keys to place a toolbar launch icon. Note that the first time you launch there may be a security popup saying iTermOpenHereScript wants access... Click OK to all.
 6. Right click on the spot on the toolbar and select **Icon Only**. To replace the generic Automator app icon with the iTerm2 icon, <kbd>command</kbd>+<kbd>i</kbd> on the original iTerm.app file, select the application icon in the top left corner of the window and <kbd>command</kbd>+<kbd>c</kbd>. Then do <kbd>command</kbd>+<kbd>i</kbd> to iTermOpenHereScript.app file, select the application icon in the top left corner of the window and <kbd>command</kbd>+<kbd>v</kbd>.
 7. To prevent two windows from opening when you click the toolbar launch icon when iTerm2 is not already running, set iTerm2's `Preferences -> General -> Startup` to **Only Restore Hotkey Window** for the Window restoration policy.
+8. To make windows open a bit faster,  in iTerm2's `Preferences -> General -> Closing` uncheck **Quit when all windows are closed**.
 
 ---
 ### Applescript
@@ -58,7 +60,6 @@ end run
 
 on CD_to(theDir)
     tell application "iTerm"
-        activate
         set term_window to (create window with default profile)
         set sesh to (current session of term_window)
         tell sesh to write text "cd " & theDir & ";clear"
