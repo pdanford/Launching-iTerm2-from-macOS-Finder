@@ -83,6 +83,7 @@ end run
 
 on CD_to(theDir)
     tell application "iTerm"
+        activate -- Brings iTerm to the foreground
         set term_window to (create window with default profile)
         set sesh to (current session of term_window)
         tell sesh to write text "cd " & theDir & ";clear"
