@@ -1,6 +1,12 @@
 Launching iTerm2 from macOS Finder
 ==================================
 
+>
+> NOTICE! This version has been replaced by a modern macOS Shortcuts.app version which is faster. And the Shortcuts version doesn't suffer from the longstanding Automator behavior/bug that has been reported with workflows that do nothing more than launch an application (you can see this using Activity Monitor and search for `automator workflow runner` - instances of which can only be cleared with a _Force Quit_ or _reboot_).
+>
+> See next commit for the Shortcuts.app version.
+>
+
 (Based on info from [Peter Downs' gitub](https://github.com/peterldowns/iterm2-finder-tools) but with modified behavior to open a new terminal window for each invocation instead of reusing an already open window.)
 
 The following three ways to launch an iTerm2 window from Finder have been tested on iTerm2 version 3+ running on macOS Mojave+.
