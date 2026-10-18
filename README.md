@@ -1,101 +1,54 @@
-Launching iTerm2 from macOS Finder
-==================================
+Launching iTerm2 via macOS Finder
+=================================
 
->
-> NOTICE! This version has been replaced by a modern macOS Shortcuts.app version which is faster. And the Shortcuts version doesn't suffer from the longstanding Automator behavior/bug that has been reported with workflows that do nothing more than launch an application (you can see this using Activity Monitor and search for `automator workflow runner` - instances of which can only be cleared with a _Force Quit_ or _reboot_).
->
-> See next commit for the Shortcuts.app version.
->
+The following describes ways to use the macOS Shortcuts.app to launch an iTerm2 window via Finder. These have been tested with iTerm2 version 3.7+ running on macOS Sonoma+.
 
-(Based on info from [Peter Downs' gitub](https://github.com/peterldowns/iterm2-finder-tools) but with modified behavior to open a new terminal window for each invocation instead of reusing an already open window.)
+pdanford - October 2026
 
-The following three ways to launch an iTerm2 window from Finder have been tested on iTerm2 version 3+ running on macOS Mojave+.
+### To Launch an iTerm2 Window:
 
-pdanford - April 2020
+### _at a selected folder in a focused Finder window - via keyboard hotkey_
 
----
+This only works with a currently selected directory in a Finder window that has focus. (It also works when a file is selected. Also, if multiple directories are selected, there will be a new iTerm window for each.)
 
+Starting sometime with iTerm2 version 3.x, it started providing **New iTerm2 Window Here** under the **Files and Folders** section at **System Settings → Keyboard → Keyboard Shortcuts → Services**. You just have to check it and assign a hotkey (e.g. <kbd>^</kbd><kbd>⌥</kbd><kbd>⌘</kbd><kbd>T</kbd>).
 
-### To Launch an iTerm2 Window at:
+Note that sometimes macOS doesn't register a new keyboard shortcut assignment immediately and may even require an OS restart to get it working. But also make sure the keyboard shortcut is unique and not already assigned somewhere else.
 
-### a selected Folder in a focused Finder window - via keyboard shortcut
+### at the working folder of a Finder window (focused or not) - via Finder toolbar icon
 
-Starting sometime with iTerm2 version 3.x, it puts **New iTerm2 Window Here** in **System Preferences -> Keyboard -> Shortcuts -> Services** under the **Files and Folders section**. You just have to check it and **Add Shortcut** (e.g. <kbd>^</kbd><kbd>⌥</kbd><kbd>⌘</kbd><kbd>T</kbd>).
+To make a shortcut using the macOS **Shortcuts.app** that can reside on Finder's toolbar as an icon and that opens a new iTerm2 window at its working folder:
 
-Note that sometimes macOS doesn't register a new keyboard Shortcut assignment immediately and may even require an OS restart to get it working. But also make sure the keyboard Shortcut is unique and not already assigned somewhere else.
-
-This is only active when a Folder is currently selected in a Finder window that has focus.
-
-### the current working Folder of a focused Finder window - via keyboard shortcut
-
-1. Run Automator, **File -> New** and choose **Quick Action**.
-2. Click **Library -> Utilities** and double click **Run AppleScript**.
-3. Workflow receives **Automatic (Nothing)** in **any application**.
-4. Paste the script from [AppleScript](#AppleScript) section below.
-5. Save; if Automator tries to save to iCloud drive, better to save locally - save as **iTermOpenHereScript.workflow** to the Desktop and then move it to `~/Library/Services`.
-6. Add the keyboard shortcut under **System Preferences -> Keyboard -> Shortcuts -> Services** under the **General** section. Check **iTermOpenHereScript** and Add Shortcut (e.g. <kbd>^</kbd><kbd>⌥</kbd><kbd>⌘</kbd><kbd>Y</kbd>). Note that the first time you launch there may be a security popup saying iTermOpenHereScript wants access... Click OK to all.
-7. To prevent two windows from opening when you use the keyboard Shortcut when iTerm2 is not already running, set iTerm2's **Preferences -> General -> Startup** to **Only Restore Hotkey Window** for the Window restoration policy.
-8. To make windows open a bit faster,  in iTerm2's **Preferences -> General -> Closing** uncheck **Quit when all windows are closed**.
-
-Note that sometimes macOS doesn't register a new keyboard Shortcut assignment immediately and may even require an OS restart to get it working. But also make sure the keyboard Shortcut is unique and not already assigned somewhere else.
-
-This is only active when a Finder window (or the Desktop itself) has focus (and ignores any selected Finder Folders).
-
-The Desktop having focus isn't really the intended use case, but for completeness, if it's the Desktop that has focus the working directory of its last focused still-open Finder window is used. If the current Desktop does not have any Finder windows, it's a bit indeterministic, but a working directory from a Finder window in other Space is used. If there are no Finder windows open in any other Spaces, it will default to the user's home directory.
-
-### the current working Folder of a focused Finder window - via Finder Toolbar icon
-
-To make an Automator App that can reside on the Finder Toolbar to open an iTerm2 window at the current focused working Folder:
-
-1. Run Automator, **File -> New** and choose **Application**.
-2. Click **Library -> Utilities** and double click **Run AppleScript**.
-3. Paste the script from [AppleScript](#AppleScript) section below.
-4. Save; if Automator tries to save to iCloud drive, better to save locally - save as **iTermOpenHereScript.app** to the Desktop and then move it to `~/Library/Services`.
-5. Drag and drop **iTermOpenHereScript.app** onto the Finder Toolbar while holding down the <kbd>⌥</kbd><kbd>⌘</kbd> keys to place a toolbar launch icon. Note that the first time you launch there may be a security popup saying iTermOpenHereScript wants access... Click OK to all.
-6. Right click on the spot on the toolbar and select **Icon Only**. To replace the generic Automator app icon with the iTerm2 icon, <kbd>⌘</kbd><kbd>i</kbd> on the actual iTerm.app file in `/Applications`, select the application icon in the top left corner of the window and <kbd>⌘</kbd><kbd>c</kbd>. Then do <kbd>⌘</kbd><kbd>i</kbd> to iTermOpenHereScript.app file, select the application icon in the top left corner of the window and <kbd>⌘</kbd><kbd>v</kbd>.
-7. To prevent two windows from opening when you click the toolbar launch icon when iTerm2 is not already running, set iTerm2's **Preferences -> General -> Startup** to **Only Restore Hotkey Window** for the Window restoration policy.
-8. To make windows open a bit faster,  in iTerm2's **Preferences -> General -> Closing** uncheck **Quit when all windows are closed**.
-
-
----
-
-### AppleScript
-
-```applescript
-on run {input, parameters}
-    set frontApp to (path to frontmost application as Unicode text)
-    if (frontApp does not contain "Finder.app") then
-        -- Finder does not have focus.
-        return
-    end if
-
-    tell application "Finder"
-        set listSize to count of (every window)
-        if listSize is equal to 0 then
-            -- The Finder desktop has focus and no windows anywhere else. default to home dir.
-            set dir_path to "~"
-        else
+0. Open **Shortcuts.app** and check that running scripts is enabled (**Shortcuts → Settings… → Advanced → Allow Running Scripts**).
+1. Create a new shortcut with the big plus and change the Title to e.g. _Open iTerm From Finder Toolbar_.
+2. Click the **Action Library** button in the upper-right corner (its icon resembles a stack of pages). This opens the actions panel on the right.
+    - In the panel's search field, type `run shell script`. Double-click or drag "Run Shell Script" into the shortcut's main workflow area as the first (and only) action. Fill in the following:
+        - Run Shell Script:
+        ```applescript
+        WD=$(/usr/bin/osascript <<'APPLESCRIPT'
+        tell application "Finder"
             try
-                set dir_path to quoted form of (POSIX path of (Folder of the front window as alias))
-            on error errMsg
-                -- This is a special dir (e.g. Network or "machine name"). default to home dir.
-                set dir_path to "~"
+                return POSIX path of (target of front Finder window as alias)
+            on error
+                display alert "Something went wrong:" message "Unable to discover Finder directory."
+                return POSIX path of (path to home folder)
             end try
-        end if
-    end tell
+        end tell
+        APPLESCRIPT
+        )
 
-    CD_to(dir_path)
-end run
-
-on CD_to(theDir)
-    tell application "iTerm"
-        activate -- Brings iTerm to the foreground
-        set term_window to (create window with default profile)
-        set sesh to (current session of term_window)
-        tell sesh to write text "cd " & theDir & ";clear"
-    end tell
-end CD_to
-```
+        /usr/bin/open -a /Applications/iTerm.app "$WD"
+        ```
+        - Shell: `sh`
+        - Input: `Input`
+        - Pass Input: `to stdin`
+    - Then close the new shortcut's edit window.
+3. Right click on the newly created shortcut and click **Add to Dock**. This will make an app in your `~/Applications` directory with your shortcut name. We need this to make something that can be added to your Finder's toolbar. But it also makes it appear on you dock, so right-click it on the dock and **Options → Remove from Dock** since it won't be used that way.
+4. Drag and drop **`~/Applications/Open iTerm From Finder Toolbar.app`** onto the Finder Toolbar while holding down the <kbd>⌘</kbd> key to place a toolbar launch icon. Note that the first time you launch there may be a security popup saying it wants Finder access... click OK.
+5. To change the displayed icon of the app version of your new shortcut to be the same as iTerm's icon, select it in Finder in your `~/Applications` directory and right-click → **Get Info**. Do the same for the actual iTerm app (usually in `/applications`). To replace the generic shortcut app icon with the iTerm2 icon using these two info windows, select the application icon in the top left corner of the iTerm info window and <kbd>⌘</kbd><kbd>c</kbd>. Then select the application icon in the top left corner of the info window for the app version of your shortcut and <kbd>⌘</kbd><kbd>v</kbd>. Close the info windows.
+6. Supporting iTerm2 settings:
+    - To prevent two windows from opening when you click the Finder toolbar launch icon when iTerm2 is not already running, set iTerm2's **Preferences → General → Startup** to **Only Restore Hotkey Window** for the Window restoration policy.
+    - To make windows open a bit faster,  in iTerm2's **Preferences → General → Closing** uncheck **Quit when all windows are closed**.
 
 ---
 
